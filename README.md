@@ -1,0 +1,2 @@
+# translator
+Automatic chat translation
