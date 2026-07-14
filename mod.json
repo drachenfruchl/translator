@@ -1,0 +1,39 @@
+{
+	"Name": "[CT] Chat translator",
+	"Description": "[@drachenfruchl]\n\nChat translation of basically every language using some google api\nAlso has some config i guess",
+	"LoadPriority": 69420,
+	"Version": "1.0.0",
+	"Scripts": [
+		{
+			"Path": "translator.nut",
+			"RunOn": "CLIENT && MP",
+            "ClientCallback": {
+				"Before": "translator_Init"
+			}
+		},
+		{
+			"Path": "translatorSettings.nut",
+			"RunOn": "UI",
+			"UICallback": {
+				"Before": "translatorSettings_Init"
+			}
+		}
+	],
+	"ConVars": [
+		{
+			"Name": "cv_translator_enabled",
+			"DefaultValue": "1",
+			"Flags": 16777232
+		},
+		{
+			"Name": "cv_translator_targetLanguage",
+			"DefaultValue": "en",
+			"Flags": 16777232
+		},
+		{
+			"Name": "cv_translator_ignoredLanguages",
+			"DefaultValue": "en",
+			"Flags": 16777232
+		}
+	]
+}
