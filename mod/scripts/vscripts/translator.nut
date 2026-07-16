@@ -1,6 +1,7 @@
 untyped
 global function translator_Init
 global function translate
+global function sayin
 
 struct{
     string          endpoint            = "https://translate-pa.googleapis.com/v1/translate"
@@ -19,6 +20,46 @@ void function translator_Init(){
 
     AddCallback_OnReceivedSayTextMessage( chathook )
     debugPrint( "Initialized! :-)" )
+}
+
+void function sayin( string text, string targetLanguage ){
+    // Make the query parameters
+    table< string, array< string > > queryParameters = {
+        [ "params.client" ]        = [ "gtx" ],
+        [ "dataTypes" ]            = [ "TRANSLATION" ],
+        [ "key" ]                  = [ "AIzaSyDLEeFI5OtFBwYBIoK_jj5m32rZK5CkCXA" ],
+        [ "query.sourceLanguage" ] = [ "auto" ],
+        [ "query.targetLanguage" ] = [ targetLanguage ],
+        [ "query.text" ]           = [ text ]
+    }
+
+    // Build the request struct
+    HttpRequest request
+    request.method          = HttpRequestMethod.GET
+    request.url             = file.endpoint
+    request.queryParameters = queryParameters
+
+    void functionref( HttpRequestResponse ) onSuccess = void function ( HttpRequestResponse response ) : ( text ){
+        if( response.statusCode == 200 ){
+            debugPrint( "Request was successful" )
+        } else {
+            debugPrint( "Request was successful, however a non 200 status code was returned: " + response.statusCode )
+            return
+        }
+
+        table json = DecodeJSON( response.body )
+        string translation = expect string( json[ "translation" ] )
+
+        if( translation.tolower() != text.tolower() )
+            GetLocalClientPlayer().ClientCommand( "say " + translation )
+    }
+
+    void functionref( HttpRequestFailure ) onFailure = void function ( HttpRequestFailure failure ) : (){
+        debugPrint( "Request was *not* successful" )
+        debugPrint( format( "[%i] Failed to send request: %s", failure.errorCode, failure.errorMessage ) )
+    }
+
+    NSHttpRequest( request, onSuccess, onFailure )
 }
 
 array ornull function translate( string text, string targetLanguage, string sourceLanguage = "auto" ){

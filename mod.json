@@ -32,7 +32,7 @@
 		},
 		{
 			"Name": "cv_translator_ignoredLanguages",
-			"DefaultValue": "en",
+			"DefaultValue": "en,ny,sw,alz,ms,haw,cnh,tl,hi,ht,so,la,id",
 			"Flags": 16777232
 		}
 	]
